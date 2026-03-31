@@ -26,6 +26,8 @@ OTA:COMMIT ────────────────►
 
 ## How it works
 
+![Protocol sequence](esp32/docs/img/protocol_sequence.svg)
+
 OTA messages are newline-terminated ASCII lines prefixed with `OTA:`,
 multiplexed over the standard NUS RX/TX characteristics. Your existing NUS
 `on_rx` handler routes lines that start with `OTA:` to the `OTAManager`
@@ -119,4 +121,4 @@ New protocol features should include tests for both the ESP32 and client sides.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+GPL-3.0 — see [LICENSE](LICENSE).

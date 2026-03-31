@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 esp32-nus-ota contributors
+# https://github.com/oscarys/esp32-nus-ota
+
 """
 ESP32 MicroPython — NUS + OTA demo
 Drop ota_manager.py alongside this file on your device.

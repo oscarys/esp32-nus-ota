@@ -1,5 +1,7 @@
 # OTA Protocol Reference
 
+![Protocol sequence diagram](img/protocol_sequence.svg)
+
 All messages are newline-terminated UTF-8 strings carried over the standard
 NUS RX (client→device) and TX (device→client) characteristics.
 
@@ -123,13 +125,14 @@ returns to IDLE.
 
 ## State machine
 
-```
-IDLE ──OTA:START(valid)──► ARMED ──OTA:DATA:0──► RECEIVING ──OTA:COMMIT──► COMMITTING
- ▲                           │                       │                          │
- │◄──────ABORT───────────────┘◄──────ABORT───────────┘                    OTA:OK / ERR
- │                                                                              │
- └──────────────────────────────────────────────────────────────────────────────┘
-```
+![OTAManager state machine](img/state_machine.svg)
+
+| State | Entered when | Exits when |
+|---|---|---|
+| `IDLE` | startup / after reset / abort | valid `OTA:START` received |
+| `ARMED` | `OTA:START` accepted | first `OTA:DATA` received |
+| `RECEIVING` | first `OTA:DATA` accepted | `OTA:COMMIT` or `OTA:ABORT` |
+| `COMMITTING` | `OTA:COMMIT` received | CRC verified (→ `IDLE` via reset) or error (→ `IDLE`) |
 
 ---
 

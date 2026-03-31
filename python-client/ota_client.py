@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Copyright (C) 2025 esp32-nus-ota contributors
+# https://github.com/oscarys/esp32-nus-ota
+
 #!/usr/bin/env python3
 """
 BLE OTA Client for ESP32 MicroPython / NUS-based OTA

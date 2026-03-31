@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# MicroPython build artifacts
+*.mpy
+
+# Flutter
+flutter-client/.dart_tool/
+flutter-client/.flutter-plugins
+flutter-client/.flutter-plugins-dependencies
+flutter-client/build/
+flutter-client/.packages
+flutter-client/pubspec.lock
+
+# Android
+flutter-client/android/.gradle/
+flutter-client/android/local.properties
+flutter-client/android/key.properties
+*.keystore
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db

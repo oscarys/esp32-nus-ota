@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  # --------------------------------------------------------------------------
+  # ESP32 unit tests — run OTAManager tests on desktop CPython
+  # --------------------------------------------------------------------------
+  esp32-tests:
+    name: ESP32 unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install pytest
+
+      - name: Run tests
+        working-directory: esp32/tests
+        run: pytest -v --tb=short
+
+  # --------------------------------------------------------------------------
+  # Python client tests — mock BLE, no hardware needed
+  # --------------------------------------------------------------------------
+  python-client-tests:
+    name: Python client tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r python-client/requirements-test.txt
+
+      - name: Run tests
+        run: pytest python-client/tests/ -v --tb=short
+
+  # --------------------------------------------------------------------------
+  # Flutter tests — widget + unit tests, no device needed
+  # --------------------------------------------------------------------------
+  flutter-tests:
+    name: Flutter tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.22.x"
+          channel: stable
+
+      - name: Get dependencies
+        working-directory: flutter-client
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: flutter-client
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests
+        working-directory: flutter-client
+        run: flutter test
+
+  # --------------------------------------------------------------------------
+  # Lint — ensure Python files are clean
+  # --------------------------------------------------------------------------
+  lint:
+    name: Python lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint esp32/
+        run: ruff check esp32/ --ignore E501
+
+      - name: Lint python-client/
+        run: ruff check python-client/ --ignore E501

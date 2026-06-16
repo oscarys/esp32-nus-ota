@@ -10,7 +10,8 @@ No custom GATT service, no re-pairing — OTA traffic rides alongside your exist
 OTA messages are newline-terminated ASCII lines prefixed with `OTA:`, multiplexed over the standard NUS RX/TX characteristics.
 Your existing `on_rx` handler routes lines that start with `OTA:` to the `OTAManager` and passes everything else to your application.
 
-See [`esp32/docs/approaches.md`](esp32/docs/approaches.md) for the full approach comparison
+See [`esp32/docs/RECOVERY.md`](esp32/docs/RECOVERY.md) for failure scenarios and recovery procedures,
+[`esp32/docs/approaches.md`](esp32/docs/approaches.md) for the full approach comparison
 and [`esp32/docs/protocol.md`](esp32/docs/protocol.md) for the full protocol specification.
 
 ## Contents

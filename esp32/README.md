@@ -11,6 +11,7 @@ MicroPython firmware for the ESP32 OTA target.
 | `docs/approaches.md` | Comparison of OTA approaches |
 | `docs/protocol.md` | Full protocol specification |
 | `docs/wiring.md` | Integration guide |
+| `docs/RECOVERY.md` | Failure scenarios & recovery procedures |
 | `tests/conftest.py` | pytest stubs for MicroPython-only modules |
 | `tests/test_ota_manager.py` | Unit tests (no hardware needed) |
 

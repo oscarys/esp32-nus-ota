@@ -1,0 +1,161 @@
+<svg width="720" height="640" viewBox="0 0 720 640" xmlns="http://www.w3.org/2000/svg" role="img"
+  font-family="ui-monospace,SFMono-Regular,Menlo,monospace">
+  <title>OTA approach comparison</title>
+  <desc>Comparison of three BLE OTA approaches for ESP32 MicroPython: NUS piggyback, custom GATT service, and firmware OTA.</desc>
+
+  <rect width="720" height="640" fill="#0d1117"/>
+
+  <line x1="205" y1="0" x2="205" y2="640" stroke="#30363d" stroke-width="0.5"/>
+  <line x1="385" y1="0" x2="385" y2="640" stroke="#30363d" stroke-width="0.5"/>
+  <line x1="565" y1="0" x2="565" y2="640" stroke="#30363d" stroke-width="0.5"/>
+
+  <rect x="0" y="0" width="720" height="50" fill="#161b22"/>
+  <text x="96"  y="21" text-anchor="middle" fill="#888780" font-size="10" font-weight="600">CRITERION</text>
+
+  <rect x="207" y="4" width="176" height="42" rx="5" fill="#152820" stroke="#1D9E75" stroke-width="0.8"/>
+  <text x="295" y="18" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">NUS piggyback</text>
+  <text x="295" y="33" text-anchor="middle" fill="#3A7A5A" font-size="10">OTA over existing NUS</text>
+  <text x="295" y="44" text-anchor="middle" fill="#3A7A5A" font-size="9">★ recommended</text>
+
+  <rect x="387" y="4" width="176" height="42" rx="5" fill="#1c2533" stroke="#378ADD" stroke-width="0.8"/>
+  <text x="475" y="18" text-anchor="middle" fill="#85B7EB" font-size="11" font-weight="600">Custom GATT service</text>
+  <text x="475" y="33" text-anchor="middle" fill="#5B8DB8" font-size="10">dedicated OTA characteristic</text>
+
+  <rect x="567" y="4" width="150" height="42" rx="5" fill="#1a1f2e" stroke="#534AB7" stroke-width="0.8"/>
+  <text x="642" y="18" text-anchor="middle" fill="#AFA9EC" font-size="11" font-weight="600">Firmware OTA</text>
+  <text x="642" y="33" text-anchor="middle" fill="#6B65A0" font-size="10">esp32.Partition flash</text>
+
+  <rect x="0" y="50"  width="720" height="64" fill="#0d1117"/>
+  <rect x="0" y="114" width="720" height="64" fill="#111419"/>
+  <rect x="0" y="178" width="720" height="64" fill="#0d1117"/>
+  <rect x="0" y="242" width="720" height="64" fill="#111419"/>
+  <rect x="0" y="306" width="720" height="64" fill="#0d1117"/>
+  <rect x="0" y="370" width="720" height="64" fill="#111419"/>
+  <rect x="0" y="434" width="720" height="64" fill="#0d1117"/>
+  <rect x="0" y="498" width="720" height="64" fill="#111419"/>
+  <rect x="0" y="562" width="720" height="64" fill="#0d1117"/>
+
+  <line x1="0" y1="114" x2="720" y2="114" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="178" x2="720" y2="178" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="242" x2="720" y2="242" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="306" x2="720" y2="306" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="370" x2="720" y2="370" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="434" x2="720" y2="434" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="498" x2="720" y2="498" stroke="#30363d" stroke-width="0.3"/>
+  <line x1="0" y1="562" x2="720" y2="562" stroke="#30363d" stroke-width="0.3"/>
+
+  <!-- ROW 1 — Implementation effort -->
+  <text x="14" y="76"  fill="#888780" font-size="11">Implementation</text>
+  <text x="14" y="90"  fill="#888780" font-size="11">effort</text>
+  <rect x="215" y="61" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="77" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Minimal</text>
+  <text x="295" y="92" text-anchor="middle" fill="#3A7A5A" font-size="10">2 lines in on_rx</text>
+  <rect x="395" y="61" width="160" height="40" rx="5" fill="#1a1500" stroke="#BA7517" stroke-width="0.5"/>
+  <text x="475" y="77" text-anchor="middle" fill="#EF9F27" font-size="11" font-weight="600">Moderate</text>
+  <text x="475" y="92" text-anchor="middle" fill="#854F0B" font-size="10">new service + UUID</text>
+  <rect x="575" y="61" width="135" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="642" y="77" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">High</text>
+  <text x="642" y="92" text-anchor="middle" fill="#7A4040" font-size="10">partition + flash API</text>
+
+  <!-- ROW 2 — Re-pairing -->
+  <text x="14" y="140" fill="#888780" font-size="11">Re-pairing</text>
+  <text x="14" y="154" fill="#888780" font-size="11">required</text>
+  <rect x="215" y="125" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="141" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Never</text>
+  <text x="295" y="156" text-anchor="middle" fill="#3A7A5A" font-size="10">uses existing bond</text>
+  <rect x="395" y="125" width="160" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="475" y="141" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">Yes</text>
+  <text x="475" y="156" text-anchor="middle" fill="#7A4040" font-size="10">new service UUID visible</text>
+  <rect x="575" y="125" width="135" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="642" y="141" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">Yes</text>
+  <text x="642" y="156" text-anchor="middle" fill="#7A4040" font-size="10">new partition layout</text>
+
+  <!-- ROW 3 — What gets updated -->
+  <text x="14" y="204" fill="#888780" font-size="11">What gets</text>
+  <text x="14" y="218" fill="#888780" font-size="11">updated</text>
+  <rect x="215" y="189" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="205" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">.py scripts</text>
+  <text x="295" y="220" text-anchor="middle" fill="#3A7A5A" font-size="10">instant, no reflash</text>
+  <rect x="395" y="189" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="475" y="205" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">.py scripts</text>
+  <text x="475" y="220" text-anchor="middle" fill="#3A7A5A" font-size="10">same as NUS</text>
+  <rect x="575" y="189" width="135" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="642" y="205" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">Full .bin</text>
+  <text x="642" y="220" text-anchor="middle" fill="#3A7A5A" font-size="10">MicroPython itself</text>
+
+  <!-- ROW 4 — Transfer speed -->
+  <text x="14" y="268" fill="#888780" font-size="11">Transfer</text>
+  <text x="14" y="282" fill="#888780" font-size="11">speed</text>
+  <rect x="215" y="253" width="160" height="40" rx="5" fill="#1a1500" stroke="#BA7517" stroke-width="0.5"/>
+  <text x="295" y="269" text-anchor="middle" fill="#EF9F27" font-size="11" font-weight="600">Moderate</text>
+  <text x="295" y="284" text-anchor="middle" fill="#854F0B" font-size="10">limited by MTU, ~2 kB/s</text>
+  <rect x="395" y="253" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="475" y="269" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Faster</text>
+  <text x="475" y="284" text-anchor="middle" fill="#3A7A5A" font-size="10">write no-rsp, larger MTU</text>
+  <rect x="575" y="253" width="135" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="642" y="269" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">Slowest</text>
+  <text x="642" y="284" text-anchor="middle" fill="#7A4040" font-size="10">full .bin, ~512 kB+</text>
+
+  <!-- ROW 5 — Brick risk -->
+  <text x="14" y="332" fill="#888780" font-size="11">Brick risk</text>
+  <rect x="215" y="317" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="333" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ None</text>
+  <text x="295" y="348" text-anchor="middle" fill="#3A7A5A" font-size="10">.bak always kept</text>
+  <rect x="395" y="317" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="475" y="333" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ None</text>
+  <text x="475" y="348" text-anchor="middle" fill="#3A7A5A" font-size="10">same safety model</text>
+  <rect x="575" y="317" width="135" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="642" y="333" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">High</text>
+  <text x="642" y="348" text-anchor="middle" fill="#7A4040" font-size="10">bad flash = no boot</text>
+
+  <!-- ROW 6 — Client complexity -->
+  <text x="14" y="396" fill="#888780" font-size="11">Client</text>
+  <text x="14" y="410" fill="#888780" font-size="11">complexity</text>
+  <rect x="215" y="381" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="397" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Low</text>
+  <text x="295" y="412" text-anchor="middle" fill="#3A7A5A" font-size="10">plain text protocol</text>
+  <rect x="395" y="381" width="160" height="40" rx="5" fill="#1a1500" stroke="#BA7517" stroke-width="0.5"/>
+  <text x="475" y="397" text-anchor="middle" fill="#EF9F27" font-size="11" font-weight="600">Moderate</text>
+  <text x="475" y="412" text-anchor="middle" fill="#854F0B" font-size="10">GATT discovery needed</text>
+  <rect x="575" y="381" width="135" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="642" y="397" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">High</text>
+  <text x="642" y="412" text-anchor="middle" fill="#7A4040" font-size="10">binary protocol + chunks</text>
+
+  <!-- ROW 7 — Coexists with app -->
+  <text x="14" y="460" fill="#888780" font-size="11">Coexists with</text>
+  <text x="14" y="474" fill="#888780" font-size="11">app protocol</text>
+  <rect x="215" y="445" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="461" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Yes</text>
+  <text x="295" y="476" text-anchor="middle" fill="#3A7A5A" font-size="10">prefix-routed, zero change</text>
+  <rect x="395" y="445" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="475" y="461" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Yes</text>
+  <text x="475" y="476" text-anchor="middle" fill="#3A7A5A" font-size="10">separate service, clean</text>
+  <rect x="575" y="445" width="135" height="40" rx="5" fill="#1a1500" stroke="#BA7517" stroke-width="0.5"/>
+  <text x="642" y="461" text-anchor="middle" fill="#EF9F27" font-size="11" font-weight="600">Partially</text>
+  <text x="642" y="476" text-anchor="middle" fill="#854F0B" font-size="10">reboots after flash</text>
+
+  <!-- ROW 8 — Recovery -->
+  <text x="14" y="524" fill="#888780" font-size="11">Recovery if</text>
+  <text x="14" y="538" fill="#888780" font-size="11">update fails</text>
+  <rect x="215" y="509" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="525" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Easy</text>
+  <text x="295" y="540" text-anchor="middle" fill="#3A7A5A" font-size="10">.bak rename via REPL</text>
+  <rect x="395" y="509" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="475" y="525" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">★ Easy</text>
+  <text x="475" y="540" text-anchor="middle" fill="#3A7A5A" font-size="10">same .bak model</text>
+  <rect x="575" y="509" width="135" height="40" rx="5" fill="#2a0f0f" stroke="#A32D2D" stroke-width="0.5"/>
+  <text x="642" y="525" text-anchor="middle" fill="#F09595" font-size="11" font-weight="600">UART only</text>
+  <text x="642" y="540" text-anchor="middle" fill="#7A4040" font-size="10">may need reflash jig</text>
+
+  <!-- ROW 9 — Best for -->
+  <text x="14" y="588" fill="#888780" font-size="11">Best for</text>
+  <rect x="215" y="573" width="160" height="40" rx="5" fill="#0f2a1e" stroke="#1D9E75" stroke-width="0.5"/>
+  <text x="295" y="589" text-anchor="middle" fill="#5DCAA5" font-size="11" font-weight="600">This project ✓</text>
+  <text x="295" y="604" text-anchor="middle" fill="#3A7A5A" font-size="10">most embedded apps</text>
+  <rect x="395" y="573" width="160" height="40" rx="5" fill="#1a1500" stroke="#BA7517" stroke-width="0.5"/>
+  <text x="475" y="589" text-anchor="middle" fill="#EF9F27" font-size="11" font-weight="600">Multiple clients</text>
+  <text x="475" y="604" text-anchor="middle" fill="#854F0B" font-size="10">e.g. app + web BLE</text>
+  <rect x="575" y="573" width="135" height="40" rx="5" fill="#1c2533" stroke="#534AB7" stroke-width="0.5"/>
+  <text x="642" y="589" text-anchor="middle" fill="#AFA9EC" font-size="11" font-weight="600">Production deploy</text>
+  <text x="642" y="604" text-anchor="middle" fill="#6B65A0" font-size="10">updating µPy itself</text>
+</svg>

@@ -51,7 +51,7 @@ class OTAManager:
 
     # Milliseconds to wait after sending OTA:OK before calling
     # machine.reset(), giving the BLE stack time to flush the reply.
-    RESET_DELAY_MS = 200
+    RESET_DELAY_MS = 500
 
     # ------------------------------------------------------------------ #
     # Public interface                                                     #
@@ -244,6 +244,14 @@ class OTAManager:
             self._state = self.IDLE
             return
 
+        # Rename succeeded — remove the backup to keep the filesystem clean.
+        # We keep it until here so it's available for emergency recovery
+        # right up until the new file is confirmed in place.
+        try:
+            os.remove(backup)
+        except OSError:
+            pass  # no backup existed — fine
+
         # Send success reply, then reset
         self._reply("OTA:OK")
         self._reset()
@@ -255,6 +263,14 @@ class OTAManager:
         time.sleep_ms(self.RESET_DELAY_MS)
         self._feed()
         machine.reset()
+
+    def abort(self):
+        """
+        Public abort — call from outside the OTA protocol, e.g. from a
+        BLE disconnect handler, to reset the state machine to IDLE.
+        Cleans up any open temp file without sending a reply.
+        """
+        self._abort_internal()
 
     def _on_abort(self):
         self._abort_internal()

@@ -3,6 +3,7 @@
 // https://github.com/oscarys/esp32-nus-ota
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -193,10 +194,15 @@ class NusOtaService {
     }
 
     await _tx!.setNotifyValue(true);
+    // Give the BLE stack a moment to register the notification
+    // subscription on both ends before we start sending commands.
+    await Future.delayed(const Duration(milliseconds: 200));
+    _replier.reset();
     _notifySub?.cancel();
     _notifySub = _tx!.onValueReceived.listen((data) {
       final line = utf8.decode(data, allowMalformed: true).trim();
-      if (line.startsWith("OTA:")) _replier.deliver(line);
+      debugPrint('[NUS-OTA] rx: $line');
+      if (line.isNotEmpty) _replier.deliver(line);
     });
   }
 
@@ -296,15 +302,39 @@ class NusOtaService {
 
   Future<void> _commit() async {
     _emit(state: OtaState.committing);
-    await _sendLine("OTA:COMMIT");
+    try {
+      await _sendLine("OTA:COMMIT");
+    } catch (e) {
+      // If the connection dropped while sending COMMIT, the ESP32 may
+      // have already received it and reset.  Check if it looks like a
+      // disconnection error (GATT_ERROR 133) and treat as success.
+      if (_isConnectionError(e)) {
+        _emit(state: OtaState.done);
+        return;
+      }
+      rethrow;
+    }
     try {
       final reply = await _replier.next(timeoutMs: 15000);
       if (!reply.startsWith("OTA:OK")) {
         throw Exception("Commit failed: $reply");
       }
     } on TimeoutException {
-      // Device likely already reset before OTA:OK drained — treat as success
+      // Device likely reset before OTA:OK drained — treat as success
+    } catch (e) {
+      if (_isConnectionError(e)) return;  // disconnection = reset = success
+      rethrow;
     }
+  }
+
+  /// Returns true for errors that indicate the device disconnected/reset,
+  /// which during commit is expected behaviour not a real failure.
+  bool _isConnectionError(Object e) {
+    final msg = e.toString().toLowerCase();
+    return msg.contains('133')          // GATT_ERROR android code
+        || msg.contains('gatt_error')
+        || msg.contains('disconnected')
+        || msg.contains('not connected');
   }
 
   // ---------------------------------------------------------------------------
@@ -313,11 +343,17 @@ class NusOtaService {
 
   Future<void> _sendLine(String text) async {
     final payload = Uint8List.fromList(utf8.encode("$text\n"));
-    // BLE write-without-response; split defensively at 512 bytes
     const mtu = 512;
+
+    // Check what write type the RX characteristic actually supports.
+    // NUS RX should support writeWithoutResponse, but some ESP32
+    // MicroPython BLE stacks only advertise the plain write property.
+    // Falling back to write-with-response is slower but always works.
+    final useNoResponse = _rx!.properties.writeWithoutResponse;
+
     for (int i = 0; i < payload.length; i += mtu) {
       final slice = payload.sublist(i, (i + mtu).clamp(0, payload.length));
-      await _rx!.write(slice, withoutResponse: true);
+      await _rx!.write(slice, withoutResponse: useNoResponse);
     }
   }
 
@@ -387,24 +423,41 @@ class NusOtaService {
 }
 
 // ---------------------------------------------------------------------------
-// _Replier — delivers the next OTA reply to whoever is await-ing it
+// _Replier — queues incoming OTA replies so none are ever dropped
 // ---------------------------------------------------------------------------
 class _Replier {
-  Completer<String>? _pending;
+  final _queue = <String>[];
+  Completer<String>? _waiter;
 
-  /// Await the next OTA:* line from the device.
+  /// Arm before sending a command — returns the next reply when it arrives.
   Future<String> next({required int timeoutMs}) {
-    _pending = Completer<String>();
-    return _pending!.future.timeout(
+    // If a reply already arrived before we started waiting, return it immediately
+    if (_queue.isNotEmpty) {
+      return Future.value(_queue.removeAt(0));
+    }
+    _waiter = Completer<String>();
+    return _waiter!.future.timeout(
       Duration(milliseconds: timeoutMs),
-      onTimeout: () => throw TimeoutException("BLE reply timeout"),
+      onTimeout: () {
+        _waiter = null;
+        throw TimeoutException('BLE reply timeout');
+      },
     );
   }
 
-  /// Called by the notification listener when a line arrives.
+  /// Called by the notification listener for every incoming line.
   void deliver(String line) {
-    if (_pending != null && !_pending!.isCompleted) {
-      _pending!.complete(line);
+    if (_waiter != null && !_waiter!.isCompleted) {
+      _waiter!.complete(line);
+      _waiter = null;
+    } else {
+      // No one waiting yet — queue it so next() can pick it up
+      _queue.add(line);
     }
+  }
+
+  void reset() {
+    _queue.clear();
+    _waiter = null;
   }
 }
